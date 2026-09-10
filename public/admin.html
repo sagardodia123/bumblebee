@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Command // BUMBLEBEE Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-page-body">
+  <!-- Top Nav -->
+  <nav class="admin-nav">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span style="font-family:var(--font-display); font-size:24px; font-weight:900;" data-brand-name>BUMBLEBEE</span>
+      <span class="badge-brutal badge-yellow" style="font-size:11px;">SHOP OWNER DASHBOARD</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="/" target="_blank" class="btn-brutal btn-sm btn-cyan">VIEW LIVE STORE ↗</a>
+      <button class="btn-brutal btn-sm btn-pink" onclick="Admin.logout()">LOCK CONSOLE</button>
+    </div>
+  </nav>
+
+  <!-- Password Gate -->
+  <div id="admin-gate-screen" class="admin-gate-card">
+    <span class="badge-brutal badge-pink">RESTRICTED ACCESS</span>
+    <h1 style="font-size:28px; margin: 16px 0 10px;">SHOP OWNER LOGIN</h1>
+    <p style="font-size:14px; color:#555; margin-bottom:24px;">
+      Enter master password to access product CRUD, variants, order fulfillment, and sales metrics.
+    </p>
+
+    <form onsubmit="event.preventDefault(); Admin.login(document.getElementById('gate-password').value);">
+      <input type="password" id="gate-password" class="input-brutal" placeholder="Enter password (default: admin123)" style="text-align:center; margin-bottom:18px;" required>
+      <button type="submit" class="btn-brutal btn-yellow btn-block" style="padding:14px;">UNLOCK DASHBOARD</button>
+    </form>
+    <div style="font-size:13px; color:#777; margin-top:18px;">Master Passphrase: <code>admin123</code></div>
+  </div>
+
+  <!-- Main Dashboard -->
+  <main id="admin-main-dashboard" class="admin-container" style="display:none;">
+    <div class="admin-header-row">
+      <div>
+        <h1 style="font-size:38px;">COMMAND CENTER</h1>
+        <p style="font-size:15px; color:#555;">Live inventory and order monitoring backed by MongoDB Atlas.</p>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <button class="btn-brutal btn-yellow" onclick="openAddProductModal()">+ ADD NEW PRODUCT</button>
+      </div>
+    </div>
+
+    <!-- Stats (NO DECIMALS, RESPONSIVE FONT SCALING) -->
+    <div class="admin-stats-grid">
+      <div class="stat-card stat-yellow">
+        <div class="stat-title">TOTAL STORE REVENUE</div>
+        <div class="stat-value" id="stat-total-revenue">&#8377;0</div>
+      </div>
+      <div class="stat-card stat-cyan">
+        <div class="stat-title">TOTAL ORDERS PLACED</div>
+        <div class="stat-value" id="stat-total-orders">0</div>
+      </div>
+      <div class="stat-card stat-pink">
+        <div class="stat-title">ACTIVE INVENTORY PIECES</div>
+        <div class="stat-value" id="stat-total-products">0</div>
+      </div>
+      <div class="stat-card stat-green">
+        <div class="stat-title">AVERAGE ORDER VALUE</div>
+        <div class="stat-value" id="stat-aov">&#8377;0</div>
+      </div>
+    </div>
+
+    <!-- Admin Tabs -->
+    <div class="admin-tab-bar">
+      <button id="admin-tab-products" class="admin-tab-btn active" onclick="switchAdminTab('products')">PRODUCT INVENTORY (CRUD &amp; VARIANTS)</button>
+      <button id="admin-tab-orders" class="admin-tab-btn" onclick="switchAdminTab('orders')">CUSTOMER ORDERS &amp; FULFILLMENT</button>
+    </div>
+
+    <!-- View 1: Products Table -->
+    <section id="admin-view-products" class="admin-table-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+        <div>
+          <h2 style="font-size:22px;">CATALOG MANAGEMENT</h2>
+          <p style="font-size:14px; color:#666;">Click any product row to inspect specifications and color variant photos.</p>
+        </div>
+        <button class="btn-brutal btn-sm btn-yellow" onclick="openAddProductModal()">+ ADD PRODUCT</button>
+      </div>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>THUMB</th>
+            <th>PRODUCT &amp; CATEGORY</th>
+            <th>PRICE</th>
+            <th>STOCK STATUS</th>
+            <th>SIZES</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="admin-products-tbody"></tbody>
+      </table>
+    </section>
+
+    <!-- View 2: Orders Table -->
+    <section id="admin-view-orders" class="admin-table-card" style="display:none;">
+      <div style="margin-bottom:18px;">
+        <h2 style="font-size:22px;">CUSTOMER ORDERS</h2>
+        <p style="font-size:14px; color:#666;">Click any order row to open shipment and customer inspection modal.</p>
+      </div>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ORDER ID</th>
+            <th>CUSTOMER</th>
+            <th>CITY / STATE</th>
+            <th>ITEMS</th>
+            <th>TOTAL (NO DECIMALS)</th>
+            <th>FULFILLMENT STATUS</th>
+            <th>TRACKING ID</th>
+          </tr>
+        </thead>
+        <tbody id="admin-orders-tbody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- ADD / EDIT PRODUCT MODAL (WITH SIZES & VARIANT IMAGE BUILDER) -->
+  <div class="cart-drawer-overlay" id="product-form-modal-overlay" onclick="closeProductModal()"></div>
+  <div id="product-form-modal" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:780px; max-height:90vh; overflow-y:auto; background:#fff; border:var(--border); box-shadow:var(--shadow-lg); z-index:4000; display:none; padding:36px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:14px; margin-bottom:20px;">
+      <h2 id="product-modal-title" style="font-size:24px;">ADD NEW PRODUCT</h2>
+      <button class="btn-brutal btn-sm btn-white" onclick="closeProductModal()">✕</button>
+    </div>
+
+    <form id="product-form" onsubmit="handleSaveProduct(event)">
+      <input type="hidden" id="prod-edit-id">
+
+      <div style="display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px;">
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; margin-bottom:6px;">PRODUCT TITLE *</label>
+          <input type="text" id="prod-name" class="input-brutal" required placeholder="e.g. Acid Cyber Windbreaker">
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; margin-bottom:6px;">CATEGORY *</label>
+          <select id="prod-category" class="select-brutal">
+            <option value="Tops & Tees">Tops & Tees</option>
+            <option value="Hoodies & Outerwear">Hoodies & Outerwear</option>
+            <option value="Bottoms & Cargos">Bottoms & Cargos</option>
+            <option value="Footwear">Footwear</option>
+            <option value="Cyber Accessories">Cyber Accessories</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px;">
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; margin-bottom:6px;">PRICE (&#8377;) *</label>
+          <input type="number" id="prod-price" class="input-brutal" required min="0" step="1" placeholder="1999">
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; margin-bottom:6px;">COMPARE AT PRICE (&#8377;)</label>
+          <input type="number" id="prod-compare-price" class="input-brutal" min="0" step="1" placeholder="2999">
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; margin-bottom:6px;">STOCK QUANTITY *</label>
+          <input type="number" id="prod-stock" class="input-brutal" required min="0" value="25">
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:13px; font-weight:800; margin-bottom:6px;">PRIMARY COVER IMAGE URL *</label>
+        <input type="url" id="prod-main-image" class="input-brutal" required placeholder="https://images.unsplash.com/...">
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:13px; font-weight:800; margin-bottom:6px;">DESCRIPTION</label>
+        <textarea id="prod-description" class="input-brutal" rows="3" placeholder="Heavyweight GSM, oversized boxy cut, acid fade..."></textarea>
+      </div>
+
+      <!-- AVAILABLE SIZES SELECTION & CUSTOM SIZES MANAGER -->
+      <div style="margin-bottom:18px; border:2px solid #000; padding:18px; background:#fff; box-shadow:2px 2px 0 #000;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+          <div>
+            <label style="display:block; font-size:13px; font-weight:800; margin-bottom:2px;">AVAILABLE SIZES FOR THIS PIECE</label>
+            <span style="font-size:12px; color:#666;">Click chip to toggle on/off, click &#x2715; to delete, or add any custom size below.</span>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn-brutal btn-sm btn-white" style="font-size:11px; padding:4px 8px;" onclick="selectAllSizes(true)">ALL</button>
+            <button type="button" class="btn-brutal btn-sm btn-white" style="font-size:11px; padding:4px 8px;" onclick="selectAllSizes(false)">NONE</button>
+            <button type="button" class="btn-brutal btn-sm btn-pink" style="font-size:11px; padding:4px 8px;" onclick="clearAllSizes()">CLEAR</button>
+          </div>
+        </div>
+
+        <!-- Custom Size Manual Input -->
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <input type="text" id="custom-size-input" class="input-brutal" placeholder="Add custom size (e.g. 3XL, UK 9, 32W, Oversized, Free Size)..." style="flex:1; padding:8px 12px; font-size:13px;" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomSizeFromInput();}">
+          <button type="button" class="btn-brutal btn-sm btn-yellow" onclick="addCustomSizeFromInput()" style="white-space:nowrap; padding:8px 16px;">+ ADD SIZE</button>
+        </div>
+
+        <!-- Quick Presets -->
+        <div style="margin-bottom:14px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span style="font-size:11px; font-weight:800; color:#555; text-transform:uppercase; margin-right:4px;">Quick Presets:</span>
+          <button type="button" class="btn-brutal btn-sm btn-white" style="font-size:11px; padding:3px 8px;" onclick="addPresetGroup(['XS','S','M','L','XL','XXL','3XL'])">+ Apparel (XS-3XL)</button>
+          <button type="button" class="btn-brutal btn-sm btn-white" style="font-size:11px; padding:3px 8px;" onclick="addPresetGroup(['UK 6','UK 7','UK 8','UK 9','UK 10','UK 11'])">+ Shoes (UK 6-11)</button>
+          <button type="button" class="btn-brutal btn-sm btn-white" style="font-size:11px; padding:3px 8px;" onclick="addPresetGroup(['28','30','32','34','36','38'])">+ Waist (28-38)</button>
+          <button type="button" class="btn-brutal btn-sm btn-white" style="font-size:11px; padding:3px 8px;" onclick="addPresetGroup(['One Size','Free Size'])">+ One Size</button>
+        </div>
+
+        <!-- Active / Configured Size Pills -->
+        <div class="size-chips-container" id="admin-size-pills"></div>
+      </div>
+
+      <!-- PROFESSIONAL VARIANT MANAGER WITH PER-OPTION IMAGES -->
+      <div class="variant-builder-container">
+        <div class="variant-builder-header">
+          <div>
+            <h4 style="font-size:15px;">COLOR &amp; STYLE VARIANTS (WITH OPTION-SPECIFIC IMAGES)</h4>
+            <p style="font-size:13px; color:#555;">Assign a photo URL to each color. When customer clicks a swatch, the image auto-switches.</p>
+          </div>
+          <button type="button" class="btn-brutal btn-sm btn-yellow" onclick="addVariantBuilderRow()">+ ADD VARIANT</button>
+        </div>
+        <div id="variant-builder-rows"></div>
+      </div>
+
+      <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:12px;">
+        <button type="button" class="btn-brutal btn-white" onclick="closeProductModal()">CANCEL</button>
+        <button type="submit" class="btn-brutal btn-yellow">SAVE PRODUCT TO ATLAS</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ROW CLICK INSPECTION MODAL -->
+  <div class="cart-drawer-overlay" id="admin-inspect-modal-overlay" onclick="closeAdminInspectModal()"></div>
+  <div id="admin-inspect-modal" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:680px; max-height:85vh; overflow-y:auto; background:#fff; border:var(--border); box-shadow:var(--shadow-lg); z-index:4000; display:none; padding:36px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:14px; margin-bottom:20px;">
+      <h2 id="admin-inspect-title" style="font-size:22px;">RECORD DETAILS</h2>
+      <button class="btn-brutal btn-sm btn-white" onclick="closeAdminInspectModal()">✕</button>
+    </div>
+    <div id="admin-inspect-body"></div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="/js/config.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

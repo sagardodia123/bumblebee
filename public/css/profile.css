@@ -1,0 +1,122 @@
+
+.profile-page-container {
+  max-width: 1240px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+}
+
+.profile-layout-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+}
+
+.profile-sidebar-card {
+  background: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 28px 24px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.profile-avatar-box {
+  width: 72px;
+  height: 72px;
+  background: var(--yellow);
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0px #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 26px;
+  margin-bottom: 16px;
+}
+
+.profile-nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+  border-top: 2px solid #eee;
+  padding-top: 20px;
+}
+
+.profile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  border: 2px solid #000;
+  background: #fff;
+  box-shadow: 2px 2px 0px #000;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.profile-nav-item:hover, .profile-nav-item.active {
+  background: var(--cyan);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #000;
+}
+
+.profile-content-card {
+  background: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 36px;
+}
+
+.profile-section-heading {
+  font-size: 22px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* User Order Cards in Profile */
+.user-order-card {
+  background: #FFFDF8;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0px #000;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.user-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid #eee;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.user-order-items-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-order-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .profile-layout-grid { grid-template-columns: 1fr; }
+  .profile-sidebar-card { position: static; }
+}

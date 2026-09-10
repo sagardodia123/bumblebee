@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encrypted Checkout // BUMBLEBEE</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/cart-checkout.css">
+</head>
+<body>
+  <!-- Top Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-content">
+      BUMBLEBEE ENCRYPTED CHECKOUT // 256-BIT SSL GATEWAY // ZERO FRAUD GUARANTEE //
+    </div>
+    <div class="ticker-content">
+      BUMBLEBEE ENCRYPTED CHECKOUT // 256-BIT SSL GATEWAY // ZERO FRAUD GUARANTEE //
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-box">B</div>
+        <span class="brand-title" data-brand-name>BUMBLEBEE</span>
+        <span class="brand-badge">CHECKOUT</span>
+      </a>
+      <a href="/" class="btn-brutal btn-sm btn-white">RETURN TO BAG</a>
+    </div>
+  </header>
+
+  <main style="max-width: 1240px; margin: 40px auto 80px; padding: 0 40px;">
+    <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap: 40px;">
+      <!-- Left: Shipping & Payment Form -->
+      <section style="background:#fff; border:var(--border); box-shadow:var(--shadow-md); padding:36px;">
+        <h2 style="font-size:24px; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:12px;">1. SHIPPING ADDRESS</h2>
+
+        <form id="checkout-form" onsubmit="handlePlaceOrder(event)">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:900; margin-bottom:6px;">RECIPIENT FULL NAME *</label>
+              <input type="text" id="ship-name" class="input-brutal" required placeholder="Alex Morgan">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:900; margin-bottom:6px;">PHONE NUMBER *</label>
+              <input type="tel" id="ship-phone" class="input-brutal" required placeholder="+91 98765 43210">
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-size:12px; font-weight:900; margin-bottom:6px;">STREET ADDRESS *</label>
+            <input type="text" id="ship-street" class="input-brutal" required placeholder="404 Cyber Block, Neo Street">
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:28px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:900; margin-bottom:6px;">CITY *</label>
+              <input type="text" id="ship-city" class="input-brutal" required placeholder="Mumbai">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:900; margin-bottom:6px;">STATE *</label>
+              <input type="text" id="ship-state" class="input-brutal" required placeholder="Maharashtra">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:900; margin-bottom:6px;">PINCODE *</label>
+              <input type="text" id="ship-pincode" class="input-brutal" required placeholder="400001">
+            </div>
+          </div>
+
+          <h2 style="font-size:24px; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:12px;">2. PAYMENT METHOD</h2>
+          <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:28px;">
+            <label style="display:flex; align-items:center; gap:12px; padding:14px; border:2px solid #000; background:#FFFDF0; cursor:pointer;">
+              <input type="radio" name="payment" value="card" checked>
+              <strong>Credit / Debit Card (Visa, Mastercard, RuPay)</strong>
+            </label>
+            <label style="display:flex; align-items:center; gap:12px; padding:14px; border:2px solid #000; background:#fff; cursor:pointer;">
+              <input type="radio" name="payment" value="upi">
+              <strong>Instant UPI / QR Code (GPay, PhonePe, Paytm)</strong>
+            </label>
+            <label style="display:flex; align-items:center; gap:12px; padding:14px; border:2px solid #000; background:#fff; cursor:pointer;">
+              <input type="radio" name="payment" value="cod">
+              <strong>Cash on Delivery (Doorstep Verification)</strong>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-brutal btn-yellow btn-block btn-lg">
+            AUTHORIZE &amp; PLACE ORDER
+          </button>
+        </form>
+      </section>
+
+      <!-- Right: Order Summary -->
+      <aside style="background:#fff; border:var(--border); box-shadow:var(--shadow-md); padding:36px; height:fit-content;">
+        <h2 style="font-size:22px; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:12px;">SUMMARY</h2>
+        <div id="checkout-items-list" style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;"></div>
+        
+        <div style="border-top:2px solid #000; padding-top:16px;">
+          <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:8px;">
+            <span>Subtotal:</span>
+            <span id="co-subtotal">&#8377;0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:8px;">
+            <span>Express Shipping:</span>
+            <span id="co-shipping">FREE</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:8px;">
+            <span>GST (5%):</span>
+            <span id="co-tax">&#8377;0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:22px; font-weight:900; border-top:2px solid #000; padding-top:12px; margin-top:12px;">
+            <span>Total:</span>
+            <span id="co-total" style="color:var(--pink);">&#8377;0</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <script src="/js/config.js"></script>
+  <script src="/js/cart.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/checkout.js"></script>
+</body>
+</html>

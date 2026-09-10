@@ -1,0 +1,49 @@
+{
+  "storeName": "BUMBLEBEE",
+  "storeSubtitle": "BEE-STUDIO",
+  "storeTagline": "ANTI-BORING GEN-Z STREETWEAR & CYBER ARCHIVE",
+  "logoIcon": "",
+  "currencySymbol": "₹",
+  "freeShippingThreshold": 1999,
+  "supportEmail": "sagardodia6@gmail.com",
+  "adminPassword": "admin123",
+  "promoCodes": {
+    "GENZ20": {
+      "discountPercent": 20,
+      "description": "20% OFF Entire Order"
+    },
+    "FREESHIP": {
+      "freeShipping": true,
+      "description": "Free Sonic Delivery"
+    },
+    "VIP30": {
+      "discountPercent": 30,
+      "description": "30% VIP Drop Access"
+    },
+    "TIKTOK15": {
+      "discountPercent": 15,
+      "description": "15% Creator Code"
+    }
+  },
+  "categories": [
+    "All Items",
+    "Tops & Tees",
+    "Hoodies & Outerwear",
+    "Bottoms & Cargos",
+    "Footwear",
+    "Cyber Accessories"
+  ],
+  "shippingRates": [
+    {
+      "id": "std",
+      "name": "Standard Delivery (3-5 Days)",
+      "cost": 0,
+      "minThreshold": 1999
+    },
+    {
+      "id": "exp",
+      "name": "Hyper-Sonic Express (1-2 Days)",
+      "cost": 199
+    }
+  ]
+}

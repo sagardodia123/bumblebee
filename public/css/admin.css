@@ -1,0 +1,247 @@
+/* Admin Console Styles */
+.admin-page-body {
+  background: #F5F3ED;
+}
+
+.admin-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 36px;
+  background: #000;
+  color: #fff;
+  border-bottom: var(--border);
+}
+
+.admin-container {
+  max-width: 1440px;
+  margin: 36px auto 80px;
+  padding: 0 36px;
+}
+
+.admin-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.stat-card {
+  padding: 26px;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.stat-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+/* STAT VALUE WITH AUTO CLAMP FONT SIZE (NO DECIMALS OVERFLOW) */
+.stat-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  font-weight: 900;
+  word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.stat-yellow { background: var(--yellow); }
+.stat-cyan { background: var(--cyan); }
+.stat-pink { background: var(--pink); color: #fff; }
+.stat-green { background: var(--green); }
+
+.admin-tab-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: var(--border);
+  padding-bottom: 12px;
+}
+
+.admin-tab-btn {
+  padding: 12px 24px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 900;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  background: #fff;
+  cursor: pointer;
+}
+
+.admin-tab-btn.active {
+  background: var(--yellow);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-table-card {
+  background: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 28px;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th {
+  padding: 14px;
+  border-bottom: 3px solid #000;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.admin-table td {
+  padding: 14px;
+  border-bottom: 2px solid #eee;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.clickable-table-row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.clickable-table-row:hover {
+  background: #fffbe6 !important;
+}
+
+.table-product-thumb {
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  border: 2px solid #000;
+}
+
+/* Variant Manager in Modal */
+.variant-builder-container {
+  border: 2px solid #000;
+  padding: 20px;
+  background: #faf8f2;
+  box-shadow: 3px 3px 0 #000;
+  margin-top: 18px;
+}
+
+.variant-builder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.variant-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+  background: #fff;
+  padding: 10px;
+  border: 2px solid #000;
+}
+
+.variant-row input {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border: 2px solid #000;
+}
+
+.admin-gate-card {
+  max-width: 440px;
+  margin: 100px auto;
+  background: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow-lg);
+  padding: 40px;
+  text-align: center;
+}
+
+/* Custom Size Manager in Modal */
+.size-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 42px;
+  align-items: center;
+  padding: 8px 0 2px;
+}
+
+.admin-size-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  font-size: 13px;
+  border: 2px solid #000;
+  background: #fff;
+  box-shadow: 2px 2px 0 #000;
+  user-select: none;
+  transition: all 0.12s ease;
+}
+
+.admin-size-chip.active {
+  background: var(--yellow, #ffe814);
+  box-shadow: 3px 3px 0 #000;
+  transform: translate(-1px, -1px);
+}
+
+.admin-size-chip:not(.active) {
+  background: #f4f4f4;
+  color: #888;
+  border-color: #888;
+  box-shadow: 1px 1px 0 #888;
+  opacity: 0.65;
+  text-decoration: line-through;
+}
+
+.admin-size-chip .chip-label {
+  cursor: pointer;
+}
+
+.admin-size-chip .chip-del-btn {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  margin-left: 2px;
+  border-radius: 2px;
+  color: #000;
+  transition: transform 0.1s ease, color 0.1s ease;
+}
+
+.admin-size-chip .chip-del-btn:hover {
+  background: #000;
+  color: #fff;
+  transform: scale(1.15);
+}
+
