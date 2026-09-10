@@ -66,32 +66,32 @@ async function loadUserOrders() {
       }
 
       container.innerHTML = myOrders.map(order => `
-        <div style="border:2px solid #000; box-shadow:3px 3px 0 #000; padding:22px; margin-bottom:20px; background:#fff;">
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:12px; margin-bottom:16px;">
+        <div class="user-order-card">
+          <div class="user-order-header">
             <div>
               <strong style="font-size:16px;">#${order.orderNumber || order._id.substring(0, 8)}</strong>
               <div style="font-size:12px; color:#666;">Placed on ${new Date(order.createdAt).toLocaleDateString()}</div>
             </div>
-            <div style="text-align:right;">
+            <div class="user-order-meta">
               <span class="badge-brutal badge-yellow" style="font-size:11px;">${(order.orderStatus || 'Processing').toUpperCase()}</span>
               <div style="font-size:18px; font-weight:900; margin-top:4px;">${window.formatPrice(order.total, false)}</div>
             </div>
           </div>
 
-          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+          <div class="user-order-items-grid">
             ${(order.items || []).map(it => `
-              <div style="display:flex; align-items:center; gap:14px;">
-                <img src="${it.image || ''}" style="width:50px; height:50px; object-fit:cover; border:2px solid #000;">
-                <div style="flex:1;">
+              <div class="user-order-item-row">
+                <img src="${it.image || ''}" class="user-order-item-img">
+                <div style="flex:1; min-width:140px;">
                   <strong style="font-size:14px;">${it.name}</strong>
                   <div style="font-size:12px; color:#666;">Size: <strong>${it.size}</strong> | Color: <strong>${it.color}</strong> | Qty: <strong>${it.quantity}</strong></div>
                 </div>
-                <div style="font-weight:800;">${window.formatPrice(it.price * it.quantity, false)}</div>
+                <div style="font-weight:800; white-space:nowrap;">${window.formatPrice(it.price * it.quantity, false)}</div>
               </div>
             `).join('')}
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; border-top:2px solid #f0f0f0; padding-top:14px;">
+          <div class="user-order-footer">
             <div style="font-size:12px; color:#666;">
               Ship to: <strong>${order.shippingAddress?.fullName || 'Customer'}, ${order.shippingAddress?.city || ''}</strong>
             </div>
@@ -228,7 +228,7 @@ window.openOrderTrackingModal = function(orderIdOrNum) {
         </div>
       `).join('')}
     </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; border-top:2px solid #000; padding-top:14px; margin-top:14px;">
+    <div class="tracking-modal-footer">
       <div><strong>Carrier:</strong> Blue Dart Express / DTDC</div>
       <a href="mailto:sagardodia6@gmail.com?subject=Tracking Inquiry ${order.orderNumber}" class="btn-brutal btn-sm btn-white">CONTACT SUPPORT</a>
     </div>

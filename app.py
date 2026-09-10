@@ -25,8 +25,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "public")
 CONFIG_PATH = os.path.join(BASE_DIR, "store_config.json")
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 app = Flask(__name__, static_folder=STATIC_DIR)
 CORS(app)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 def load_store_config():
     if os.path.exists(CONFIG_PATH):
@@ -997,6 +1000,22 @@ def admin_page():
 @app.route("/<path:filename>")
 def serve_static(filename):
     return send_from_directory(STATIC_DIR, filename)
+
+# Automatically register route aliases without /api prefix for Vercel compatibility
+for rule in list(app.url_map.iter_rules()):
+    if rule.rule.startswith("/api/"):
+        stripped_rule = rule.rule[4:]
+        if stripped_rule not in ["/product", "/checkout", "/auth", "/profile", "/admin"]:
+            endpoint_name = rule.endpoint + "_vercel_alias"
+            if endpoint_name not in app.view_functions:
+                methods = [m for m in rule.methods if m not in ["HEAD", "OPTIONS"]]
+                app.add_url_rule(stripped_rule, endpoint_name, app.view_functions[rule.endpoint], methods=methods)
+
+@app.errorhandler(404)
+def handle_404(e):
+    if request.path.startswith("/api") or "api" in request.path or request.headers.get("Accept", "").find("json") != -1:
+        return jsonify({"success": False, "message": f"API route {request.path} not found"}), 404
+    return send_from_directory(STATIC_DIR, "index.html"), 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

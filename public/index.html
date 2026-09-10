@@ -75,7 +75,7 @@
   <!-- Sticky Category Navigation Bar -->
   <div class="category-bar-wrapper" id="catalog-section">
     <div class="category-bar">
-      <div class="category-pills">
+      <div class="category-pills" id="category-pills-bar">
         <button class="cat-pill active" onclick="filterCategory('All Items', this)">ALL ITEMS</button>
         <button class="cat-pill" onclick="filterCategory('Tops & Tees', this)">TOPS &amp; TEES</button>
         <button class="cat-pill" onclick="filterCategory('Hoodies & Outerwear', this)">HOODIES &amp; OUTERWEAR</button>
@@ -84,12 +84,14 @@
         <button class="cat-pill" onclick="filterCategory('Cyber Accessories', this)">ACCESSORIES</button>
       </div>
 
-      <select class="select-brutal" style="width:auto; padding:8px 16px;" onchange="handleSortChange(this)">
-        <option value="featured">Sort: Featured Drops</option>
-        <option value="price-asc">Price: Low to High</option>
-        <option value="price-desc">Price: High to Low</option>
-        <option value="rating">Top Customer Rated</option>
-      </select>
+      <div class="category-sort-wrap">
+        <select class="select-brutal category-sort-select" onchange="handleSortChange(this)">
+          <option value="featured">Sort: Featured Drops</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Customer Rated</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -149,7 +151,7 @@
 
   <!-- Product Detail Modal Overlay (DYNAMIC VARIANT PHOTO SWITCHER) -->
   <div class="cart-drawer-overlay" id="product-modal-overlay" onclick="closeProductModal()"></div>
-  <div id="product-detail-modal" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:880px; max-height:90vh; overflow-y:auto; background:#fff; border:var(--border); box-shadow:var(--shadow-lg); z-index:4000; display:none; padding:36px;">
+  <div id="product-detail-modal" class="product-modal-card-popup" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:880px; max-height:90vh; overflow-y:auto; background:#fff; border:var(--border); box-shadow:var(--shadow-lg); z-index:4000; display:none;">
     <button class="btn-brutal btn-sm btn-white" style="position:absolute; top:20px; right:20px; z-index:10;" onclick="closeProductModal()">✕</button>
     <div id="product-modal-render-target"></div>
   </div>

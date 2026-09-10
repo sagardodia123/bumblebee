@@ -38,3 +38,30 @@
 .auth-tab-btn:first-child {
   border-right: var(--border);
 }
+
+.auth-page-main {
+  max-width: 520px;
+  margin: 50px auto 80px;
+  padding: 0 20px;
+}
+
+.auth-card-box {
+  background: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow-lg);
+  padding: 40px 36px;
+}
+
+@media (max-width: 540px) {
+  .auth-page-main {
+    margin: 24px auto 50px;
+    padding: 0 16px;
+  }
+  .auth-card-box {
+    padding: 26px 18px;
+  }
+  .auth-card-box h1 {
+    font-size: 24px !important;
+  }
+}
+

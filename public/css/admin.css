@@ -245,3 +245,122 @@
   transform: scale(1.15);
 }
 
+/* Responsive Admin Modal Cards & Grids */
+.admin-modal-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 780px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow-lg);
+  z-index: 4000;
+  display: none;
+  padding: 32px;
+}
+
+.admin-form-grid-2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Admin Media Queries */
+@media (max-width: 992px) {
+  .admin-container {
+    padding: 0 18px;
+    margin: 20px auto 40px;
+  }
+  .admin-nav {
+    padding: 12px 18px;
+  }
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .admin-table-card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-nav {
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    text-align: center;
+  }
+  .admin-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .admin-header-row > div:last-child {
+    width: 100%;
+  }
+  .admin-header-row > div:last-child button {
+    width: 100%;
+  }
+  .admin-tab-bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+  .admin-tab-btn {
+    white-space: nowrap;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+  .admin-modal-card {
+    width: 95%;
+    max-height: 92vh;
+    padding: 20px 16px;
+  }
+  .admin-form-grid-2,
+  .admin-form-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .variant-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .variant-row input.var-img {
+    width: 100%;
+    flex: 100%;
+  }
+  .admin-gate-card {
+    margin: 40px 16px;
+    padding: 28px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-table th,
+  .admin-table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+  .table-product-thumb {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+

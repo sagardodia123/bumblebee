@@ -30,14 +30,14 @@
     </div>
   </header>
 
-  <main style="max-width: 1240px; margin: 40px auto 80px; padding: 0 40px;">
-    <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap: 40px;">
+  <main class="checkout-main">
+    <div class="checkout-layout-grid">
       <!-- Left: Shipping & Payment Form -->
-      <section style="background:#fff; border:var(--border); box-shadow:var(--shadow-md); padding:36px;">
+      <section class="checkout-form-card">
         <h2 style="font-size:24px; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:12px;">1. SHIPPING ADDRESS</h2>
 
         <form id="checkout-form" onsubmit="handlePlaceOrder(event)">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div class="form-grid-2">
             <div>
               <label style="display:block; font-size:12px; font-weight:900; margin-bottom:6px;">RECIPIENT FULL NAME *</label>
               <input type="text" id="ship-name" class="input-brutal" required placeholder="Alex Morgan">
@@ -53,7 +53,7 @@
             <input type="text" id="ship-street" class="input-brutal" required placeholder="404 Cyber Block, Neo Street">
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:28px;">
+          <div class="form-grid-3">
             <div>
               <label style="display:block; font-size:12px; font-weight:900; margin-bottom:6px;">CITY *</label>
               <input type="text" id="ship-city" class="input-brutal" required placeholder="Mumbai">
@@ -91,7 +91,7 @@
       </section>
 
       <!-- Right: Order Summary -->
-      <aside style="background:#fff; border:var(--border); box-shadow:var(--shadow-md); padding:36px; height:fit-content;">
+      <aside class="checkout-summary-card">
         <h2 style="font-size:22px; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:12px;">SUMMARY</h2>
         <div id="checkout-items-list" style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;"></div>
         

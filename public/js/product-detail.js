@@ -45,9 +45,9 @@ function renderProductDetailModal(product) {
   const variants = product.variants || [];
 
   target.innerHTML = `
-    <div style="display:grid; grid-template-columns: 1fr 1.2fr; gap:36px;">
+    <div class="product-modal-grid-inner">
       <div>
-        <div style="border:var(--border); box-shadow:var(--shadow-md); overflow:hidden; background:#f4f4f4; width:100%; height:400px;">
+        <div class="product-modal-img-frame">
           <img id="detail-main-img" src="${mainImg}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover; transition:opacity 0.2s ease;">
         </div>
       </div>

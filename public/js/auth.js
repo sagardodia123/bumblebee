@@ -74,7 +74,14 @@ async function handleCustomerLogin(e) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(`Server returned non-JSON response (${res.status})`);
+    }
+
     if (data.success) {
       Auth.setSession(data.user, data.token);
       window.showToast("Welcome back, " + data.user.name + "!");
@@ -101,7 +108,14 @@ async function handleCustomerRegister(e) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, phone, password })
     });
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(`Server returned non-JSON response (${res.status})`);
+    }
+
     if (data.success) {
       Auth.setSession(data.user, data.token);
       window.showToast("Account registered successfully!");
@@ -128,12 +142,21 @@ async function handleGoogleFastPass() {
         phone: "+91 98000 00000"
       })
     });
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(`Server returned non-JSON response (${res.status})`);
+    }
+
     if (data.token) {
       Auth.setSession(data.user, data.token);
       window.showToast("Successfully signed in with Google!");
       const redirect = new URLSearchParams(window.location.search).get("redirect") || "/profile";
       setTimeout(() => { window.location.href = redirect; }, 600);
+    } else {
+      window.showToast(data.message || "Failed to sign in with Google", "error");
     }
   } catch (err) {
     window.showToast("Google sign-in error: " + err.message, "error");

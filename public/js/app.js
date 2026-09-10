@@ -32,12 +32,20 @@ async function fetchProducts() {
     if (maxPrice) url += `&maxPrice=${maxPrice}`;
 
     const res = await fetch(url);
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      throw new Error(`Server returned status ${res.status}. Please refresh.`);
+    }
 
     if (data.success) {
       allProducts = data.products || [];
       renderProductGrid(allProducts);
       updateItemCountDisplay(allProducts.length);
+    } else {
+      throw new Error(data.message || "Failed to load drops");
     }
   } catch (err) {
     grid.innerHTML = `
@@ -186,7 +194,45 @@ function setupSearch() {
   });
 }
 
+function initCategoryPillsScroll() {
+  const container = document.getElementById("category-pills-bar");
+  if (!container) return;
+
+  let isDown = false;
+  let startX = 0;
+  let scrollLeft = 0;
+
+  container.addEventListener("mousedown", (e) => {
+    isDown = true;
+    container.classList.add("dragging");
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDown = false;
+    container.classList.remove("dragging");
+  });
+
+  container.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - startX) * 1.6;
+    container.scrollLeft = scrollLeft - walk;
+  });
+
+  // Convert mouse wheel to horizontal scroll when cursor is over the pills
+  container.addEventListener("wheel", (e) => {
+    if (e.deltaY !== 0 && container.scrollWidth > container.clientWidth) {
+      e.preventDefault();
+      container.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   fetchProducts();
   setupSearch();
+  initCategoryPillsScroll();
 });

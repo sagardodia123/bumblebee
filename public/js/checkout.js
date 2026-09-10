@@ -34,15 +34,15 @@ function renderCheckoutSummary() {
   const totals = Cart.getTotals();
 
   container.innerHTML = items.map(it => `
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <div style="display:flex; gap:12px; align-items:center;">
-        <img src="${it.image || ''}" style="width:44px; height:44px; object-fit:cover; border:2px solid #000;">
-        <div>
-          <strong style="font-size:13px;">${it.name}</strong>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+      <div style="display:flex; gap:12px; align-items:center; flex:1; min-width:140px;">
+        <img src="${it.image || ''}" style="width:44px; height:44px; object-fit:cover; border:2px solid #000; flex-shrink:0;">
+        <div style="min-width:0;">
+          <strong style="font-size:13px; word-break:break-word;">${it.name}</strong>
           <div style="font-size:11px; color:#666;">${it.size} | ${it.color} x ${it.quantity}</div>
         </div>
       </div>
-      <strong>${window.formatPrice(it.price * it.quantity, false)}</strong>
+      <strong style="white-space:nowrap;">${window.formatPrice(it.price * it.quantity, false)}</strong>
     </div>
   `).join('');
 
