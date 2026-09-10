@@ -2,8 +2,12 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/api",
+      "destination": "/api/index.py?__vercel_path=/api"
+    },
+    {
       "source": "/api/(.*)",
-      "destination": "/api/index.py"
+      "destination": "/api/index.py?__vercel_path=/api/$1"
     },
     {
       "source": "/admin",
@@ -28,10 +32,6 @@
     {
       "source": "/",
       "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/api/index.py"
     }
   ]
 }

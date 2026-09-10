@@ -379,6 +379,15 @@ def get_current_user_from_req(req):
 
 # --- API ROUTES ---
 
+@app.route("/api", methods=["GET"])
+@app.route("/api/health", methods=["GET"])
+def api_health():
+    return jsonify({
+        "success": True,
+        "message": "Bumblebee API serverless backend is operational",
+        "status": "healthy"
+    })
+
 @app.route("/api/config", methods=["GET"])
 def get_config():
     cfg = load_store_config()
