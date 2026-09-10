@@ -26,10 +26,69 @@ STATIC_DIR = os.path.join(BASE_DIR, "public")
 CONFIG_PATH = os.path.join(BASE_DIR, "store_config.json")
 
 from werkzeug.middleware.proxy_fix import ProxyFix
+from urllib.parse import parse_qs, urlencode
+
+class VercelWSGIMiddleware:
+    """
+    Normalizes WSGI environment for Vercel Serverless deployments.
+    Handles path rewriting, query parameter forwarding, and ensures Flask routes match reliably.
+    """
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        qs_raw = environ.get("QUERY_STRING", "")
+        
+        # 1. First priority: Check __vercel_path passed via vercel.json rewrite
+        if "__vercel_path" in qs_raw:
+            qs = parse_qs(qs_raw, keep_blank_values=True)
+            if "__vercel_path" in qs:
+                target_path = qs.pop("__vercel_path")[0]
+                if len(target_path) > 1 and target_path.endswith("/"):
+                    target_path = target_path.rstrip("/")
+                environ["PATH_INFO"] = target_path
+                environ["SCRIPT_NAME"] = ""
+                # Clean up query string so __vercel_path isn't in request.args
+                flat_qs = [(k, v) for k, vs in qs.items() for v in vs]
+                environ["QUERY_STRING"] = urlencode(flat_qs)
+
+        # 2. Check X-Forwarded-Uri, X-Matched-Path, X-Original-URI, REQUEST_URI, RAW_URI
+        elif (
+            environ.get("HTTP_X_FORWARDED_URI")
+            or environ.get("HTTP_X_MATCHED_PATH")
+            or environ.get("HTTP_X_ORIGINAL_URI")
+            or environ.get("REQUEST_URI")
+            or environ.get("RAW_URI")
+        ):
+            fwd = (
+                environ.get("HTTP_X_FORWARDED_URI")
+                or environ.get("HTTP_X_MATCHED_PATH")
+                or environ.get("HTTP_X_ORIGINAL_URI")
+                or environ.get("REQUEST_URI")
+                or environ.get("RAW_URI")
+            ).split("?")[0]
+            if fwd.startswith("/api") and not fwd.startswith("/api/index"):
+                if len(fwd) > 1 and fwd.endswith("/"):
+                    fwd = fwd.rstrip("/")
+                environ["PATH_INFO"] = fwd
+                environ["SCRIPT_NAME"] = ""
+
+        # 3. If SCRIPT_NAME is /api and PATH_INFO is /products, join them
+        script_name = environ.get("SCRIPT_NAME", "")
+        path_info = environ.get("PATH_INFO", "")
+        if script_name and not path_info.startswith(script_name):
+            combined = script_name.rstrip("/") + "/" + path_info.lstrip("/")
+            if len(combined) > 1 and combined.endswith("/"):
+                combined = combined.rstrip("/")
+            environ["PATH_INFO"] = combined
+            environ["SCRIPT_NAME"] = ""
+
+        return self.wsgi_app(environ, start_response)
 
 app = Flask(__name__, static_folder=STATIC_DIR)
 CORS(app)
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+app.wsgi_app = VercelWSGIMiddleware(app.wsgi_app)
 
 def load_store_config():
     if os.path.exists(CONFIG_PATH):
@@ -382,6 +441,28 @@ def get_current_user_from_req(req):
 @app.route("/api", methods=["GET"])
 @app.route("/api/health", methods=["GET"])
 def api_health():
+    return jsonify({
+        "success": True,
+        "message": "Bumblebee API serverless backend is operational",
+        "status": "healthy"
+    })
+
+@app.route("/api/index.py", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+@app.route("/api/index", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+def vercel_index_catchall():
+    orig = (
+        request.headers.get("X-Forwarded-Uri")
+        or request.headers.get("X-Matched-Path")
+        or request.headers.get("X-Original-URI")
+        or request.args.get("__vercel_path")
+    )
+    if orig and orig not in ["/api/index.py", "/api/index", "/index.py", "/index"]:
+        clean = orig.split("?")[0].rstrip("/")
+        for rule in app.url_map.iter_rules():
+            if rule.rule == clean and request.method in rule.methods:
+                return app.view_functions[rule.endpoint]()
+    if request.method == "GET":
+        return get_products()
     return jsonify({
         "success": True,
         "message": "Bumblebee API serverless backend is operational",
